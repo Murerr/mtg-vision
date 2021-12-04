@@ -12,7 +12,8 @@ async function detectText(fileName) {
     const client = new vision.ImageAnnotatorClient();
     const [result] = await client.textDetection(fileName);
     const detections = result.textAnnotations;
-    return detections[0].description;  // Will return all text found in file
+    const card_title = detections[0].description.split('\n')[0];
+    return card_title
 }
 
 var app = express();
