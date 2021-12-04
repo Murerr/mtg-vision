@@ -33,10 +33,19 @@ app.post('/upload', async function (req, res) {
         return res.status(400).send('No files were uploaded.');
     }
     let sampleFile = req.files.sampleFile;
-    let uploadPath = __dirname + '/test-images/' + sampleFile.name;
-    // Use the mv() method to place the file somewhere on your server
-    await sampleFile.mv(uploadPath);
-    const results = await detectText(uploadPath)
-    res.send(results);
+    let results = [];
+    if (sampleFile.length && sampleFile.length > 0){
+        for (let i = 0; i < sampleFile.length; i++){
+            console.log(sampleFile[i]);
+            let uploadPath = __dirname + '/test-images/' + sampleFile[i].name;
+            await sampleFile[i].mv(uploadPath);
+            results.push(await detectText(uploadPath));
+        }
+    } else {
+        let uploadPath = __dirname + '/test-images/' + sampleFile.name;
+        await sampleFile.mv(uploadPath);
+        results.push(await detectText(uploadPath));
+    }
+    res.send(results.join());
 });
 module.exports = app;
